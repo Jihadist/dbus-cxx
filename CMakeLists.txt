@@ -33,7 +33,9 @@ set( DBUS_CXX_MAJMIN_VERSION ${DBUS_CXX_PACKAGE_MAJOR_VERSION}.${DBUS_CXX_PACKAG
 
 # Our required dependencies are libdbus and libsigc++
 pkg_check_modules( dbus REQUIRED dbus-1>=1.3 )
-pkg_check_modules( sigc REQUIRED sigc++-2.0 )
+
+find_package(SIGCXX REQUIRED)
+find_package(Threads REQUIRED)
 
 # Dbus-cxx requires at least C++11
 set( CMAKE_CXX_STANDARD 11 )
@@ -146,15 +148,12 @@ set( DBUS_CXX_INCLUDE_DIRECTORIES
 #
 # Target for the library
 #
-add_library( dbus-cxx SHARED ${DBUS_CXX_SOURCES} )
-#add_library( dbus-cxx-static STATIC ${DBUS_CXX_SOURCES} )
+add_library( dbus-cxx ${DBUS_CXX_SOURCES} )
 set_target_properties( dbus-cxx PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-target_link_libraries( dbus-cxx ${dbus_LIBS} ${sigc_LIBS} -lrt -pthread )
+target_link_libraries( dbus-cxx ${dbus_LIBS} sigc++::sigc++ rt Threads::Threads )
 target_include_directories( dbus-cxx PUBLIC
     ${DBUS_CXX_INCLUDE_DIRECTORIES}
-    ${dbus_INCLUDE_DIRS}
-    ${sigc_INCLUDE_DIR} )
-target_compile_options( dbus-cxx PUBLIC -pthread )
+    ${dbus_INCLUDE_DIRS})
 
 #
 # If GLIBMM is used, add in the appropriate packages
@@ -247,7 +246,7 @@ SET(PKG_CONFIG_CFLAGS
     "-I\${includedir}"
 )
 SET(PKG_CONFIG_REQUIRES
-    "dbus-1 >= 1.3, sigc++-2.0"
+    "dbus-1 >= 1.3"
 )
 
 CONFIGURE_FILE(

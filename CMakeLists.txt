@@ -1,4 +1,4 @@
-#   This file is part of the dbus-cxx library.                            
+﻿#   This file is part of the dbus-cxx library.                            
 #                                                                         
 #   The dbus-cxx library is free software; you can redistribute it and/or 
 #   modify it under the terms of the GNU General Public License           
@@ -12,9 +12,9 @@
 #   You should have received a copy of the GNU General Public License     
 #   along with this software. If not see <http://www.gnu.org/licenses/>.  
 
-project( dbus-cxx )
-
 cmake_minimum_required( VERSION 3.1 )
+
+project( dbus-cxx )
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules")
 
@@ -32,7 +32,7 @@ set( PKG_VERSION ${DBUS_CXX_PACKAGE_MAJOR_VERSION}.${DBUS_CXX_PACKAGE_MINOR_VERS
 set( DBUS_CXX_MAJMIN_VERSION ${DBUS_CXX_PACKAGE_MAJOR_VERSION}.${DBUS_CXX_PACKAGE_MINOR_VERSION} )
 
 # Our required dependencies are libdbus and libsigc++
-pkg_check_modules( dbus REQUIRED dbus-1>=1.3 )
+find_package(DBus1 REQUIRED)
 
 find_package(SIGCXX REQUIRED)
 find_package(Threads REQUIRED)
@@ -150,10 +150,8 @@ set( DBUS_CXX_INCLUDE_DIRECTORIES
 #
 add_library( dbus-cxx ${DBUS_CXX_SOURCES} )
 set_target_properties( dbus-cxx PROPERTIES VERSION 1.0.0 SOVERSION 1 )
-target_link_libraries( dbus-cxx ${dbus_LIBS} sigc++::sigc++ rt Threads::Threads )
-target_include_directories( dbus-cxx PUBLIC
-    ${DBUS_CXX_INCLUDE_DIRECTORIES}
-    ${dbus_INCLUDE_DIRS})
+target_link_libraries( dbus-cxx ${dbus_LIBS} sigc++::sigc++ dbus-1 rt Threads::Threads )
+target_include_directories( dbus-cxx PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/dbus-cxx )
 
 #
 # If GLIBMM is used, add in the appropriate packages

@@ -30,6 +30,9 @@ find_library(POPT_LIBRARY
   DOC "popt library path"
   )
 
+message(STATUS "POPT_LIBRARY ${POPT_LIBRARY}")
+message(STATUS "POPT_INCLUDE_DIR ${POPT_INCLUDE_DIR}")
+
 include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(POPT
@@ -38,9 +41,9 @@ find_package_handle_standard_args(POPT
 
 mark_as_advanced(POPT_INCLUDE_DIR POPT_LIBRARY)
 
-if(POPT_FOUND AND NOT TARGET popt::popt)
-  add_library(popt::popt UNKNOWN IMPORTED)
-  set_target_properties(popt::popt PROPERTIES
+if(POPT_FOUND AND NOT TARGET popt)
+  add_library(popt UNKNOWN IMPORTED)
+  set_target_properties(popt PROPERTIES
     IMPORTED_LINK_INTERFACE_LANGUAGES "C"
     IMPORTED_LOCATION "${POPT_LIBRARY}"
     INTERFACE_INCLUDE_DIRECTORIES "${POPT_INCLUDE_DIR}"

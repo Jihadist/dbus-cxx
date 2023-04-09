@@ -18,7 +18,6 @@ include(CMakeFindDependencyMacro)
 find_dependency(DBus)
 find_dependency(SIGCXX)
 
-include(DBusGenerate)
 # Restore old modules path
 set(CMAKE_MODULE_PATH ${_save_CMAKE_MODULE_PATH})
 

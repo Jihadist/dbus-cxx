@@ -102,6 +102,7 @@ set( DBUS_CXX_HEADERS1
 set( DBUS_CXX_HEADERS
     dbus-cxx/accumulators.h
     dbus-cxx/callmessage.h
+ #   dbus-cxx/connection.h
     dbus-cxx/dbus-cxx-private.h
     dbus-cxx/dispatcher.h
     dbus-cxx/enums.h
@@ -217,21 +218,26 @@ endforeach( filename )
 #
 # Library install information
 #
+SET_TARGET_PROPERTIES(
+    dbus-cxx
+    PROPERTIES
+    PUBLIC_HEADER "${DBUS_CXX_HEADERS}"
+)
+
+message(STATUS "DBUS_CXX_HEADERS:${DBUS_CXX_HEADERS}")
+
 install( TARGETS dbus-cxx
     COMPONENT dbus-cxx
     EXPORT dbus-cxxTargets
     DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-    LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
-    ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}" )
+    RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    ARCHIVE       DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+    PUBLIC_HEADER DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/dbus-cxx-${DBUS_CXX_MAJMIN_VERSION}/dbus-cxx")
 
-SET_TARGET_PROPERTIES(
-    dbus-cxx
-    PROPERTIES
-    PUBLIC_HEADER ${DBUS_CXX_HEADERS} ${DBUS_CXX_HEADERS1}
-)
-
-
+install(FILES ${DBUS_CXX_HEADERS1}
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/dbus-cxx-${DBUS_CXX_MAJMIN_VERSION}"
+        COMPONENT dbus-cxx)
 #
 # pkg-config script creation and install
 #
@@ -325,14 +331,12 @@ INSTALL(
     FILES
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}/
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/FindDBus.cmake
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/FindSIGCXX.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}
+    COMPONENT dbus-cxx
 )
-INSTALL( FILES "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/FindDBus.cmake"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/dbus-cxx"
-    COMPONENT dbus-cxx)
-INSTALL( FILES "${CMAKE_CURRENT_SOURCE_DIR}/cmake-modules/FindSIGCXX.cmake"
-    DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/dbus-cxx"
-    COMPONENT dbus-cxx)
+
 INSTALL(EXPORT dbus-cxxTargets
     FILE        dbus-cxxTargets.cmake
     NAMESPACE   dbus-cxx::
